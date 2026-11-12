@@ -226,6 +226,17 @@ o.bind("SUPER + ALT + SPACE", "Web search", "omarchy-shell shell toggle gusmezom
 - **List shortcuts in use:** `omarchy menu keybindings --print`.
 - **Apply:** `hyprctl reload && hyprctl configerrors`.
 
+#### Example: use `SUPER + SHIFT + SPACE`
+
+By default, Omarchy uses `SUPER + SHIFT + SPACE` to show and hide the top bar. If you don't use that, you can free the combination and give it to the web search:
+
+```lua
+hl.unbind("SUPER + SHIFT + SPACE")
+o.bind("SUPER + SHIFT + SPACE", "Web search", "omarchy-shell shell toggle gusmezomo.websearch")
+```
+
+The first line removes Omarchy's top bar toggle from the shortcut. The second binds the same keys to this plugin.
+
 The command `omarchy-shell shell toggle gusmezomo.websearch` also works outside the shortcut, from a script or the terminal.
 
 ### Appearance
