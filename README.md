@@ -1,50 +1,44 @@
-# Web Search — plugin para o Omarchy
+# Web Search — an Omarchy plugin
 
-Um launcher compacto para pesquisar na web ou abrir uma URL, aberto por um atalho de teclado. Inspirado na barra de pesquisa do Zen Browser, mas menor, e com as cores do tema ativo do Omarchy.
+A compact launcher to search the web or open a URL, opened with a keyboard shortcut. Inspired by the Zen Browser search bar, but smaller, and styled with the active Omarchy theme.
 
-```
-╭──────────────────────────────────────────╮
-│ 🔍  ( YouTube )  lofi beats              │
-│ ──────────────────────────────────────── │
-│ ▶  lofi beats — Search with YouTube      │
-╰──────────────────────────────────────────╯
-```
+![Web Search launcher](docs/screenshot.png)
 
-## Recursos
+## Features
 
-- **Keywords de site:** digite `yt` e aperte Espaço ou Tab, e aparece uma etiqueta "YouTube". O que você digitar depois é pesquisado no YouTube.
-- **Abrir URL direto:** `https://...`, `github.com/foo`, `localhost:5173` ou `192.168.0.1:8080` + Enter abrem o endereço.
-- **Navegador à sua escolha:** abre no navegador que você definir (Zen, Firefox, Chromium...), sem depender do padrão do sistema. Também dá para escolher um navegador por site.
-- **Sites configuráveis:** adicione, altere ou remova sites num arquivo JSON, que recarrega sozinho ao salvar.
-- **Segue o tema do Omarchy:** fundo, texto, borda e escurecimento da tela vêm do tema ativo e mudam junto com ele.
-- **Sem rede:** o plugin não acessa a internet. Só o navegador acessa, quando você abre algo.
-- **Traduzido:** inglês e português (Brasil), seguindo o idioma escolhido no Omarchy.
+- **Site keywords:** type `yt` and press Space or Tab, and a "YouTube" tag appears. Whatever you type next is searched on YouTube.
+- **Open URLs directly:** `https://...`, `github.com/foo`, `localhost:5173` or `192.168.0.1:8080` + Enter opens the address.
+- **Your choice of browser:** opens in the browser you set (Zen, Firefox, Chromium...), independent of the system default. You can also pick a browser per site.
+- **Configurable sites:** add, change or remove sites in a JSON file that reloads on save.
+- **Follows the Omarchy theme:** background, text, border and screen dimming come from the active theme and change with it.
+- **No network access:** the plugin never touches the internet. Only the browser does, when you open something.
+- **Translated:** English and Brazilian Portuguese, following the language selected in Omarchy.
 
-## Requisitos
+## Requirements
 
-- Omarchy com o shell em Quickshell (`omarchy-shell`), a versão que tem plugins em `~/.config/omarchy/plugins/`.
-- Uma Nerd Font para os ícones. O Omarchy já vem com a JetBrainsMono Nerd Font.
-- Opcional: `notify-send`, para o aviso quando o navegador configurado não é encontrado.
+- Omarchy with the Quickshell-based shell (`omarchy-shell`), the version with plugins in `~/.config/omarchy/plugins/`.
+- A Nerd Font for the icons. Omarchy ships with JetBrainsMono Nerd Font.
+- Optional: `notify-send`, for the notice shown when the configured browser is not found.
 
-## Instalação
+## Installation
 
-### 1. Colocar o plugin na pasta de plugins
+### 1. Put the plugin in the plugins folder
 
-O nome da pasta precisa ser igual ao `id` do `manifest.json` (`gusmezomo.websearch`).
+The folder name must match the `id` in `manifest.json` (`gusmezomo.websearch`).
 
 ```sh
 git clone https://github.com/gusmezomo/omarchy-websearch.git ~/.config/omarchy/plugins/gusmezomo.websearch
 ```
 
-Para desenvolver em outra pasta, use um link simbólico:
+To develop from another folder, use a symlink:
 
 ```sh
-ln -s ~/Work/WebSearch/gusmezomo.websearch ~/.config/omarchy/plugins/gusmezomo.websearch
+ln -s ~/path/to/omarchy-websearch ~/.config/omarchy/plugins/gusmezomo.websearch
 ```
 
-### 2. Ativar no shell
+### 2. Enable it in the shell
 
-Adicione o plugin à lista `plugins` em `~/.config/omarchy/shell.json`:
+Add the plugin to the `plugins` list in `~/.config/omarchy/shell.json`:
 
 ```json
 {
@@ -54,31 +48,31 @@ Adicione o plugin à lista `plugins` em `~/.config/omarchy/shell.json`:
 }
 ```
 
-Se já houver outros plugins na lista, só acrescente a linha. Depois reinicie o shell uma vez:
+If the list already has other plugins, just add the entry. Then restart the shell once:
 
 ```sh
 omarchy restart shell
 ```
 
-### 3. Criar o atalho de teclado
+### 3. Add a keyboard shortcut
 
-Adicione em `~/.config/hypr/bindings.lua`:
+Add this to `~/.config/hypr/bindings.lua`:
 
 ```lua
 o.bind("SUPER + CTRL + G", "Web search", "omarchy-shell shell toggle gusmezomo.websearch")
 ```
 
-Depois confira se a config carregou sem erros:
+Then check that the config loaded without errors:
 
 ```sh
 hyprctl reload && hyprctl configerrors
 ```
 
-Veja a seção [Trocar o atalho](#trocar-o-atalho) para usar outra combinação.
+See [Changing the shortcut](#changing-the-shortcut) to use a different key combination.
 
-### 4. Escolher o navegador (opcional)
+### 4. Choose a browser (optional)
 
-Crie `~/.config/omarchy/websearch.json`:
+Create `~/.config/omarchy/websearch.json`:
 
 ```json
 {
@@ -86,45 +80,45 @@ Crie `~/.config/omarchy/websearch.json`:
 }
 ```
 
-Sem esse arquivo, o plugin abre no navegador padrão do sistema (`xdg-open`).
+Without this file, the plugin opens links in the system default browser (`xdg-open`).
 
-## Como usar
+## Usage
 
-| Ação | Tecla |
+| Action | Key |
 |---|---|
-| Abrir / fechar | o seu atalho (ex.: `SUPER + CTRL + G`) |
-| Ativar a etiqueta de um site | digite a keyword exata + `Espaço` ou `Tab` |
-| Remover a etiqueta | `Backspace` com o campo vazio |
-| Navegar pela lista | `↑` / `↓` |
-| Abrir o item selecionado | `Enter` ou clique |
-| Fechar | `Esc` ou clique fora da caixa |
+| Open / close | your shortcut (e.g. `SUPER + CTRL + G`) |
+| Activate a site tag | type the exact keyword + `Space` or `Tab` |
+| Remove the tag | `Backspace` with an empty field |
+| Move through the list | `↑` / `↓` |
+| Open the selected item | `Enter` or click |
+| Close | `Esc` or click outside the box |
 
-**Detalhes do comportamento:**
-- **Keyword exata:** a etiqueta só aparece com a keyword exata. `yt` vira etiqueta, mas `YT` e `yt2` não. Com o texto igual a uma keyword, a lista mostra a dica "Use YouTube [Tab]".
-- **Sem etiqueta:** a pesquisa vai para o site padrão (Google).
-- **Com etiqueta:** o texto é sempre pesquisado no site da etiqueta, mesmo que pareça uma URL.
-- **Etiqueta com campo vazio:** Enter abre a página inicial do site.
-- **Texto que parece URL:** o primeiro item da lista abre o endereço e o segundo pesquisa o texto. Use `↓` + Enter para pesquisar em vez de abrir.
-- **Depois de abrir algo:** a caixa fecha sozinha.
+**Behavior details:**
+- **Exact keyword:** the tag only appears for the exact keyword. `yt` becomes a tag, but `YT` and `yt2` don't. When the text matches a keyword, the list shows a "Use YouTube [Tab]" hint.
+- **No tag:** the search goes to the default site (Google).
+- **With a tag:** the text is always searched on the tagged site, even if it looks like a URL.
+- **Tag with an empty field:** Enter opens the site's home page.
+- **Text that looks like a URL:** the first item opens the address and the second searches for the text. Press `↓` + Enter to search instead of opening.
+- **After opening something:** the box closes by itself.
 
-### Sites incluídos
+### Built-in sites
 
 | Keyword | Site |
 |---|---|
-| `g` | Google (padrão) |
+| `g` | Google (default) |
 | `yt` | YouTube |
 | `gh` | GitHub |
 | `red` | Reddit |
-| `tr` | Google Tradutor (traduz para português) |
+| `tr` | Google Translate (translates into Portuguese) |
 | `x` | X (Twitter) |
 
-## Configuração
+## Configuration
 
-Toda a configuração pessoal fica em **`~/.config/omarchy/websearch.json`**. O arquivo é opcional, e o plugin o recarrega ao salvar, sem precisar reiniciar o shell.
+All personal settings live in **`~/.config/omarchy/websearch.json`**. The file is optional, and the plugin reloads it on save, with no shell restart needed.
 
-Os sites padrão ficam em `sites.json`, dentro do plugin. Não edite esse arquivo: as mudanças se perdem quando você atualiza o plugin. Use o seu `websearch.json`, que só precisa listar o que você quer mudar.
+The default sites are in `sites.json`, inside the plugin. Don't edit that file: your changes would be lost when you update the plugin. Use your own `websearch.json`, which only needs to list what you want to change.
 
-Exemplo completo:
+Full example:
 
 ```json
 {
@@ -142,50 +136,50 @@ Exemplo completo:
 }
 ```
 
-### `browser`: qual navegador usar
+### `browser`: which browser to use
 
-É o comando que abre o navegador, escrito como **lista** (cada argumento num item). O plugin acrescenta a URL no final.
+The command that opens the browser, written as a **list** (one argument per item). The plugin appends the URL at the end.
 
 ```json
 "browser": ["zen-browser"]
 "browser": ["firefox"]
 "browser": ["chromium"]
 "browser": ["zen-browser", "--private-window"]
-"browser": ["firefox", "-P", "Trabalho"]
+"browser": ["firefox", "-P", "Work"]
 "browser": ["chromium", "--profile-directory=Profile 1"]
 ```
 
-- **Vazio ou ausente:** usa o navegador padrão do sistema (`xdg-open`).
-- **Comando não encontrado:** abre no navegador padrão e mostra uma notificação.
-- **Navegador já aberto:** normalmente a URL abre numa aba nova da janela existente.
-- **Como descobrir o comando:** veja a linha `Exec=` do arquivo `.desktop` do navegador, por exemplo em `/usr/share/applications/zen.desktop`, ou rode `which zen-browser`.
+- **Empty or missing:** uses the system default browser (`xdg-open`).
+- **Command not found:** opens in the default browser and shows a notification.
+- **Browser already running:** the URL usually opens in a new tab of the existing window.
+- **Finding the command:** look at the `Exec=` line of the browser's `.desktop` file, e.g. `/usr/share/applications/zen.desktop`, or run `which zen-browser`.
 
-O comando é executado diretamente, sem passar por um shell. Por isso o texto digitado nunca é interpretado como comando.
+The command runs directly, without going through a shell, so typed text is never interpreted as a command.
 
-### `defaultSite`: site usado sem etiqueta
+### `defaultSite`: site used without a tag
 
-É a keyword do site usado quando não há etiqueta. O padrão é `"g"` (Google).
+The keyword of the site used when there's no tag. Defaults to `"g"` (Google).
 
 ```json
 "defaultSite": "ddg"
 ```
 
-### `sites`: adicionar, alterar e remover sites
+### `sites`: add, change and remove sites
 
-Cada chave é a **keyword** do site: letras e números, até 12 caracteres, diferenciando maiúsculas de minúsculas.
+Each key is the site's **keyword**: letters and digits, up to 12 characters, case-sensitive.
 
-**Adicionar um site:** informe pelo menos `name` e `url`.
+**Add a site:** give at least `name` and `url`.
 
 ```json
 "sites": {
   "wiki": {
-    "name": "Wikipédia",
-    "url": "https://pt.wikipedia.org/w/index.php?search=%s"
+    "name": "Wikipedia",
+    "url": "https://en.wikipedia.org/w/index.php?search=%s"
   }
 }
 ```
 
-**Alterar um site existente:** informe só os campos que mudam. O resto vem do padrão.
+**Change an existing site:** give only the fields that change. The rest comes from the default.
 
 ```json
 "sites": {
@@ -193,7 +187,7 @@ Cada chave é a **keyword** do site: letras e números, até 12 caracteres, dife
 }
 ```
 
-**Remover um site padrão:** use `null`.
+**Remove a default site:** set it to `null`.
 
 ```json
 "sites": {
@@ -201,7 +195,7 @@ Cada chave é a **keyword** do site: letras e números, até 12 caracteres, dife
 }
 ```
 
-**Trocar a keyword de um site:** remova a antiga e crie a nova.
+**Change a site's keyword:** remove the old one and create the new one.
 
 ```json
 "sites": {
@@ -210,95 +204,96 @@ Cada chave é a **keyword** do site: letras e números, até 12 caracteres, dife
 }
 ```
 
-#### Campos de um site
+#### Site fields
 
-| Campo | Obrigatório | Descrição |
+| Field | Required | Description |
 |---|---|---|
-| `name` | sim | Nome mostrado na etiqueta e na lista (até 40 caracteres). |
-| `url` | sim | URL de pesquisa, com `%s` onde entra o texto pesquisado. Precisa começar com `https://` ou `http://`. |
-| `home` | não | Página aberta com a etiqueta e o campo vazio. O padrão é o domínio da `url`. |
-| `icon` | não | Ícone Nerd Font (veja abaixo). Sem ícone, aparece uma lupa. |
-| `color` | não | Cor do ícone em hexadecimal (`#RRGGBB`). Sem cor, usa a cor do texto do tema. |
-| `browser` | não | Navegador só para este site, no mesmo formato do `browser` global. |
+| `name` | yes | Name shown on the tag and in the list (up to 40 characters). |
+| `url` | yes | Search URL, with `%s` where the query goes. Must start with `https://` or `http://`. |
+| `home` | no | Page opened with a tag and an empty field. Defaults to the domain of `url`. |
+| `icon` | no | Nerd Font icon (see below). Without one, a magnifier is shown. |
+| `color` | no | Icon color in hex (`#RRGGBB`). Without one, the theme's text color is used. |
+| `browser` | no | Browser for this site only, in the same format as the global `browser`. |
 
-**Como descobrir a URL de pesquisa de um site:** pesquise qualquer palavra no site, copie a URL da barra de endereço e troque a palavra por `%s`.
+**Finding a site's search URL:** search for any word on the site, copy the URL from the address bar and replace the word with `%s`.
 
-Sites com `url` inválida, sem `%s` ou com keyword inválida são ignorados. Se o JSON tiver erro de sintaxe, o plugin usa só os sites padrão até você corrigir.
+Sites with an invalid `url`, without `%s`, or with an invalid keyword are ignored. If the JSON has a syntax error, the plugin uses only the default sites until you fix it.
 
-#### Ícones
+#### Icons
 
-O campo `icon` aceita um caractere de uma Nerd Font. Procure o ícone em <https://www.nerdfonts.com/cheat-sheet> e cole o caractere direto no JSON:
+The `icon` field takes a single Nerd Font character. Find the icon at <https://www.nerdfonts.com/cheat-sheet> and paste the character straight into the JSON:
 
 ```json
 "icon": "󰇥"
 ```
 
-Os ícones da família Material Design (`nf-md-*`) costumam ter a aparência mais uniforme.
+Material Design icons (`nf-md-*`) tend to look the most consistent.
 
-### Trocar o atalho
+### Changing the shortcut
 
-Edite a linha do `o.bind` em `~/.config/hypr/bindings.lua`, por exemplo:
+Edit the `o.bind` line in `~/.config/hypr/bindings.lua`, for example:
 
 ```lua
 o.bind("SUPER + ALT + SPACE", "Web search", "omarchy-shell shell toggle gusmezomo.websearch")
 ```
 
-- **Atalho já usado:** se a combinação já for de uma função padrão do Omarchy, libere-a antes com `hl.unbind("SUPER + ALT + SPACE")`, numa linha acima.
-- **Ver atalhos em uso:** `omarchy menu keybindings --print`.
-- **Aplicar:** `hyprctl reload && hyprctl configerrors`.
+- **Shortcut already taken:** if the combination is already bound to a default Omarchy action, free it first with `hl.unbind("SUPER + ALT + SPACE")` on a line above.
+- **List shortcuts in use:** `omarchy menu keybindings --print`.
+- **Apply:** `hyprctl reload && hyprctl configerrors`.
 
-O comando `omarchy-shell shell toggle gusmezomo.websearch` também funciona fora do atalho, num script ou no terminal.
+The command `omarchy-shell shell toggle gusmezomo.websearch` also works outside the shortcut, from a script or the terminal.
 
-### Aparência
+### Appearance
 
-A caixa usa as cores dos menus do tema ativo (`[menu]` no tema do Omarchy): fundo, texto, borda e escurecimento da tela. Para mudar as cores, personalize o tema (veja `omarchy theme --help`). Não há cores fixas no plugin.
+The box uses the menu colors of the active theme (`[menu]` in the Omarchy theme): background, text, border and screen dimming. To change the colors, customize the theme (see `omarchy theme --help`). The plugin has no hard-coded colors.
 
-A caixa abre no monitor que estiver em foco.
+The box opens on the focused monitor.
 
-## Solução de problemas
+## Troubleshooting
 
-**O atalho não faz nada.**
-- Confira se o plugin está na lista `plugins` do `~/.config/omarchy/shell.json`.
-- Rode `omarchy-shell shell toggle gusmezomo.websearch` no terminal para descartar problema no atalho.
-- Rode `hyprctl configerrors` para ver erros na config do Hyprland.
+**The shortcut does nothing.**
+- Check that the plugin is in the `plugins` list in `~/.config/omarchy/shell.json`.
+- Run `omarchy-shell shell toggle gusmezomo.websearch` in a terminal to rule out a shortcut problem.
+- Run `hyprctl configerrors` to see errors in the Hyprland config.
 
-**Mudei o `.qml` e nada mudou.** O shell às vezes mantém a versão antiga em cache. Rode `omarchy restart shell`.
+**I changed the `.qml` and nothing happened.** The shell sometimes keeps the old version cached. Run `omarchy restart shell`.
 
-**Ver erros do plugin:**
+**See the plugin's errors:**
 
 ```sh
 journalctl --user -b --no-pager | grep -i websearch
 ```
 
-**Abre no navegador errado.** Confira o `browser` no `websearch.json` e se o comando existe (`which <comando>`). Se aparecer a notificação "Browser not found", o comando não foi encontrado.
+**It opens in the wrong browser.** Check `browser` in `websearch.json` and that the command exists (`which <command>`). A "Browser not found" notification means the command wasn't found.
 
-**Um site que adicionei não aparece.** Confira se a `url` começa com `https://` e tem `%s`, e se a keyword tem só letras e números.
+**A site I added doesn't show up.** Check that its `url` starts with `https://` and contains `%s`, and that the keyword has only letters and digits.
 
-## Desenvolvimento
+## Development
 
 ```
 gusmezomo.websearch/
-├── manifest.json        # manifesto do plugin (tipo overlay)
-├── WebSearch.qml        # interface: caixa, etiqueta, lista, teclado
-├── Logic.js             # detecção de URL/keyword, config, comando de abrir
-├── sites.json           # sites padrão
-├── i18n/                # traduções (en, pt-BR)
-└── tests/logic.test.js  # testes da lógica
+├── manifest.json        # plugin manifest (overlay kind)
+├── WebSearch.qml        # UI: box, tag, list, keyboard handling
+├── Logic.js             # URL/keyword detection, config, open command
+├── sites.json           # default sites
+├── i18n/                # translations (en, pt-BR)
+├── docs/                # README images
+└── tests/logic.test.js  # logic tests
 ```
 
-A lógica em `Logic.js` não depende de QML. Os testes rodam com Node:
+`Logic.js` has no QML dependencies. The tests run with Node:
 
 ```sh
 node tests/logic.test.js
 ```
 
-Para adicionar um idioma, crie `i18n/<código>.json` com as mesmas chaves do `en.json`. Os códigos aceitos são os do Omarchy (`$OMARCHY_PATH/default/i18n/locales.json`).
+To add a language, create `i18n/<code>.json` with the same keys as `en.json`. Accepted codes are Omarchy's (`$OMARCHY_PATH/default/i18n/locales.json`).
 
-## Próximos passos
+## Roadmap
 
-- Histórico das pesquisas recentes.
-- Sugestões enquanto digita.
+- History of recent searches.
+- Suggestions while typing.
 
-## Licença
+## License
 
 [MIT](LICENSE)
