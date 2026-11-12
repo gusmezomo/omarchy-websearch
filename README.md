@@ -33,7 +33,7 @@ Um launcher compacto para pesquisar na web ou abrir uma URL, aberto por um atalh
 O nome da pasta precisa ser igual ao `id` do `manifest.json` (`gusmezomo.websearch`).
 
 ```sh
-git clone <url-do-repositorio> ~/.config/omarchy/plugins/gusmezomo.websearch
+git clone https://github.com/gusmezomo/omarchy-websearch.git ~/.config/omarchy/plugins/gusmezomo.websearch
 ```
 
 Para desenvolver em outra pasta, use um link simbólico:
