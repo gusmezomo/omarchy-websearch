@@ -153,16 +153,37 @@ The keyword of the site used when there's no tag. Defaults to `"g"` (Google).
 
 Each key is the site's **keyword**: letters and digits, up to 12 characters, case-sensitive.
 
-**Add a site:** give at least `name` and `url`.
+**Add a site:** give at least `name` and `url`. For example, Twitch with the keyword `tw`:
 
 ```json
-"sites": {
-  "wiki": {
-    "name": "Wikipedia",
-    "url": "https://en.wikipedia.org/w/index.php?search=%s"
+{
+  "browser": ["zen-browser"],
+  "sites": {
+    "tw": {
+      "name": "Twitch",
+      "url": "https://www.twitch.tv/search?term=%s",
+      "home": "https://www.twitch.tv",
+      "icon": "󰕃",
+      "color": "#9146FF"
+    }
   }
 }
 ```
+
+Save the file, open the launcher, and type `tw` + Space: a "Twitch" tag appears, and your search opens `https://www.twitch.tv/search?term=...`.
+
+To add any other site the same way:
+
+1. **Pick a keyword.** It's the key of the entry (`"tw"` above). Choose something short that isn't already used. The built-in keywords are listed in [Built-in sites](#built-in-sites).
+2. **Find the search URL.** Search for any word on the site, for example `hello` on twitch.tv. Copy the URL from the address bar (`https://www.twitch.tv/search?term=hello`) and replace the word with `%s`.
+3. **Set the name.** `name` is what the tag and the list show.
+4. **Optionally:**
+   - add `home`, the page opened when you press Enter with the tag and an empty field;
+   - add `icon` and `color` (see [Icons](#icons));
+   - add `browser`, to open this site in a different browser.
+5. **Save.** The plugin reloads the file by itself.
+
+Keep each site inside `"sites"` and separate entries with commas. If the JSON has a syntax error, only the built-in sites load, so check the commas and quotes if your site doesn't appear.
 
 **Change an existing site:** give only the fields that change. The rest comes from the default.
 
@@ -206,13 +227,26 @@ Sites with an invalid `url`, without `%s`, or with an invalid keyword are ignore
 
 #### Icons
 
-The `icon` field takes a single Nerd Font character. Find the icon at <https://www.nerdfonts.com/cheat-sheet> and paste the character straight into the JSON:
+The `icon` field takes one character from a [Nerd Font](https://www.nerdfonts.com/), the icon font Omarchy already uses. To find one:
 
-```json
-"icon": "󰇥"
-```
+1. Open the cheat sheet at <https://www.nerdfonts.com/cheat-sheet>.
+2. Search for the site's name, e.g. `twitch`. Several icon sets may match. Prefer the Material Design ones (names starting with `nf-md-`), which look the most consistent with the built-in sites. For Twitch it's `nf-md-twitch`, code `f0543`.
+3. Click the icon to copy it, and paste the character between the quotes:
 
-Material Design icons (`nf-md-*`) tend to look the most consistent.
+   ```json
+   "icon": "󰕃"
+   ```
+
+   If your editor shows an empty box or nothing, the character is still there; your editor's font just can't draw it. To avoid that, write it as an escape code instead. Codes of four hex digits go as `\u` + the code (`"\uf09b"` for `f09b`). Longer codes, like `f0543`, need a pair of escapes, which you can get with:
+
+   ```sh
+   python3 -c 'import json; print(json.dumps(chr(0xf0543)))'
+   # "\udb81\udd43"
+   ```
+
+4. Optionally, set `color` to the brand color in hex (Twitch is `#9146FF`). Without it, the icon uses the theme's text color.
+
+If the icon shows up as a different symbol or an empty box in the launcher, your installed Nerd Font doesn't have it. Check with `fc-list ":charset=f0543"` (using your icon's code). If nothing is listed, pick another icon. Without an `icon`, the site shows a magnifier.
 
 ### Changing the shortcut
 
