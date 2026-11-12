@@ -298,3 +298,7 @@ Para adicionar um idioma, crie `i18n/<código>.json` com as mesmas chaves do `en
 
 - Histórico das pesquisas recentes.
 - Sugestões enquanto digita.
+
+## Licença
+
+[MIT](LICENSE)
