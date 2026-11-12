@@ -22,41 +22,17 @@ A compact launcher to search the web or open a URL, opened with a keyboard short
 
 ## Installation
 
-### 1. Put the plugin in the plugins folder
-
-The folder name must match the `id` in `manifest.json` (`gusmezomo.websearch`).
-
 ```sh
-git clone https://github.com/gusmezomo/omarchy-websearch.git ~/.config/omarchy/plugins/gusmezomo.websearch
+omarchy plugin add https://github.com/gusmezomo/omarchy-websearch.git --enable
 ```
 
-To develop from another folder, use a symlink:
+This clones the plugin into `~/.config/omarchy/plugins/gusmezomo.websearch` and enables it in the shell.
 
-```sh
-ln -s ~/path/to/omarchy-websearch ~/.config/omarchy/plugins/gusmezomo.websearch
-```
+Then add a keyboard shortcut and, optionally, choose a browser.
 
-### 2. Enable it in the shell
+### Add a keyboard shortcut
 
-Add the plugin to the `plugins` list in `~/.config/omarchy/shell.json`:
-
-```json
-{
-  "plugins": [
-    { "id": "gusmezomo.websearch" }
-  ]
-}
-```
-
-If the list already has other plugins, just add the entry. Then restart the shell once:
-
-```sh
-omarchy restart shell
-```
-
-### 3. Add a keyboard shortcut
-
-Add this to `~/.config/hypr/bindings.lua`:
+Plugins can't register shortcuts themselves, so add this to `~/.config/hypr/bindings.lua`:
 
 ```lua
 o.bind("SUPER + CTRL + G", "Web search", "omarchy-shell shell toggle gusmezomo.websearch")
@@ -70,7 +46,7 @@ hyprctl reload && hyprctl configerrors
 
 See [Changing the shortcut](#changing-the-shortcut) to use a different key combination.
 
-### 4. Choose a browser (optional)
+### Choose a browser (optional)
 
 Create `~/.config/omarchy/websearch.json`:
 
@@ -81,6 +57,15 @@ Create `~/.config/omarchy/websearch.json`:
 ```
 
 Without this file, the plugin opens links in the system default browser (`xdg-open`).
+
+### Update and remove
+
+```sh
+omarchy plugin update gusmezomo.websearch
+omarchy plugin remove gusmezomo.websearch
+```
+
+Removing the plugin leaves your `~/.config/omarchy/websearch.json` and the shortcut in `bindings.lua` in place; delete them by hand if you no longer want them.
 
 ## Usage
 
@@ -252,7 +237,7 @@ The box opens on the focused monitor.
 ## Troubleshooting
 
 **The shortcut does nothing.**
-- Check that the plugin is in the `plugins` list in `~/.config/omarchy/shell.json`.
+- Check that the plugin is installed and enabled with `omarchy plugin list`; enable it with `omarchy plugin enable gusmezomo.websearch`.
 - Run `omarchy-shell shell toggle gusmezomo.websearch` in a terminal to rule out a shortcut problem.
 - Run `hyprctl configerrors` to see errors in the Hyprland config.
 
@@ -279,6 +264,14 @@ gusmezomo.websearch/
 ├── i18n/                # translations (en, pt-BR)
 ├── docs/                # README images
 └── tests/logic.test.js  # logic tests
+```
+
+To work on the plugin from a clone elsewhere, symlink it into the plugins folder (the folder name must match the `id` in `manifest.json`) and enable it:
+
+```sh
+ln -s ~/path/to/omarchy-websearch ~/.config/omarchy/plugins/gusmezomo.websearch
+omarchy plugin enable gusmezomo.websearch
+omarchy plugin validate ~/path/to/omarchy-websearch
 ```
 
 `Logic.js` has no QML dependencies. The tests run with Node:
