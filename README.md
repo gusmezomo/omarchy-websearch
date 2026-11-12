@@ -10,6 +10,7 @@ A compact launcher to search the web or open a URL, opened with a keyboard short
 - **Open URLs directly:** `https://...`, `github.com/foo`, `localhost:5173` or `192.168.0.1:8080` + Enter opens the address.
 - **Your choice of browser:** opens in the browser you set (Zen, Firefox, Chromium...), independent of the system default. You can also pick a browser per site.
 - **Configurable sites:** add, change or remove sites in a JSON file that reloads on save.
+- **Recent searches:** as you type, searches and links you opened before show up as suggestions. The history stays on your computer and keeps 30 days by default.
 - **Follows the Omarchy theme:** background, text, border and screen dimming come from the active theme and change with it.
 - **No network access:** the plugin never touches the internet. Only the browser does, when you open something.
 - **Translated:** English and Brazilian Portuguese, following the language selected in Omarchy.
@@ -65,7 +66,7 @@ omarchy plugin update gusmezomo.websearch
 omarchy plugin remove gusmezomo.websearch
 ```
 
-Removing the plugin leaves your `~/.config/omarchy/websearch.json` and the shortcut in `bindings.lua` in place; delete them by hand if you no longer want them.
+Removing the plugin leaves your `~/.config/omarchy/websearch.json`, your search history (`~/.local/state/omarchy-websearch/`) and the shortcut in `bindings.lua` in place; delete them by hand if you no longer want them.
 
 ## Usage
 
@@ -76,6 +77,7 @@ Removing the plugin leaves your `~/.config/omarchy/websearch.json` and the short
 | Remove the tag | `Backspace` with an empty field |
 | Move through the list | `↑` / `↓` |
 | Open the selected item | `Enter` or click |
+| Forget the selected history suggestion | `Shift + Delete` |
 | Close | `Esc` or click outside the box |
 
 **Behavior details:**
@@ -85,6 +87,7 @@ Removing the plugin leaves your `~/.config/omarchy/websearch.json` and the short
 - **Tag with an empty field:** Enter opens the site's home page.
 - **Text that looks like a URL:** the first item opens the address and the second searches for the text. Press `↓` + Enter to search instead of opening.
 - **After opening something:** the box closes by itself.
+- **History suggestions:** with an empty field the box stays clean. Once you start typing, up to 5 past searches and links containing the text appear below the main item, with the site's icon (`lofi beats — YouTube`). Matches that start with what you typed come first, then the ones you use often and recently. With a tag active, only that site's searches are suggested.
 
 ### Built-in sites
 
@@ -117,7 +120,8 @@ Full example:
     },
     "yt": { "browser": ["chromium"] },
     "red": null
-  }
+  },
+  "history": { "enabled": true, "days": 30, "max": 300 }
 }
 ```
 
@@ -148,6 +152,25 @@ The keyword of the site used when there's no tag. Defaults to `"g"` (Google).
 ```json
 "defaultSite": "ddg"
 ```
+
+### `history`: recent searches
+
+Every search and link you open through the launcher is saved, so it can be suggested the next time you type something similar.
+
+```json
+"history": { "enabled": true, "days": 30, "max": 300 }
+```
+
+| Field | Default | Description |
+|---|---|---|
+| `enabled` | `true` | `false` stops saving and suggesting. Entries already saved stay in the file until you delete it. |
+| `days` | `30` | Entries not used for this many days are deleted. |
+| `max` | `300` | Maximum number of entries kept; the oldest go first. |
+
+- **Where it's stored:** `~/.local/state/omarchy-websearch/history.json` (or under `$XDG_STATE_HOME` if set), in a folder only your user can read. Nothing is sent anywhere.
+- **What's stored:** for each entry, the text, the site, the URL, how many times you used it and when you last did. Repeating a search updates its entry instead of adding a new one. Opening a site's home page (a tag with an empty field) isn't saved.
+- **Forget one entry:** select the suggestion and press `Shift + Delete`.
+- **Clear everything:** delete the file: `rm ~/.local/state/omarchy-websearch/history.json`.
 
 ### `sites`: add, change and remove sites
 
@@ -329,8 +352,7 @@ To add a language, create `i18n/<code>.json` with the same keys as `en.json`. Ac
 
 ## Roadmap
 
-- History of recent searches.
-- Suggestions while typing.
+- Inline completion in the field (completing `git` to `github.com/...` as you type).
 
 ## License
 

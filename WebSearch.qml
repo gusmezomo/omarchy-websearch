@@ -21,8 +21,12 @@ Item {
 
   property string defaultsText: ""
   property string userText: ""
+  property var history: []
   readonly property string pluginDir: String(Qt.resolvedUrl(".")).replace(/^file:\/\//, "").replace(/\/+$/, "")
   readonly property string userConfigPath: Quickshell.env("HOME") + "/.config/omarchy/websearch.json"
+  // Searches and links opened through the launcher. Local only.
+  readonly property string historyDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy-websearch"
+  readonly property string historyPath: historyDir + "/history.json"
 
   // Theme: shares the [menu] surface tokens, like the other Omarchy overlays.
   readonly property color background: Commons.Color.menu.background
@@ -72,8 +76,40 @@ Item {
   }
 
   function rebuild() {
-    root.rows = Logic.buildRows(root.config, root.tag, input.text)
+    var history = root.config.history && root.config.history.enabled ? root.history : []
+    root.rows = Logic.buildRows(root.config, root.tag, input.text, history, Date.now())
     root.selectedIndex = 0
+  }
+
+  function loadHistory(text) {
+    var now = Date.now()
+    root.history = Logic.pruneHistory(Logic.parseHistory(text), now, root.config.history || { days: 30, max: 300 })
+    if (root.opened) root.rebuild()
+  }
+
+  function saveHistory() {
+    historyFile.setText(JSON.stringify(root.history, null, 2) + "\n")
+  }
+
+  function recordRow(row) {
+    if (!root.config.history || !root.config.history.enabled) return
+    var now = Date.now()
+    var entry = Logic.entryForRow(row, now)
+    if (!entry) return
+    root.history = Logic.recordEntry(root.history, entry, now, root.config.history)
+    root.saveHistory()
+  }
+
+  // Shift+Delete on a history suggestion forgets it.
+  function forgetSelected() {
+    var row = root.rows[root.selectedIndex]
+    if (!row || row.kind !== "history") return false
+    var keep = root.selectedIndex
+    root.history = Logic.removeEntry(root.history, row.key)
+    root.saveHistory()
+    root.rows = Logic.buildRows(root.config, root.tag, input.text, root.history, Date.now())
+    root.selectedIndex = Math.min(keep, Math.max(0, root.rows.length - 1))
+    return true
   }
 
   function setTag(keyword) {
@@ -99,6 +135,7 @@ Item {
     if (row.kind === "tag") { root.setTag(row.site); return }
     if (!row.url) return
     var cmd = Logic.openCommand(root.config, row.site, row.url)
+    root.recordRow(row)
     root.dismiss()
     Quickshell.execDetached(cmd)
   }
@@ -108,13 +145,13 @@ Item {
   }
 
   function rowIcon(row) {
-    if (row.kind === "open") return "\u{f059f}"
+    if (row.kind === "open" || row.historyKind === "open") return "\u{f059f}"
     var site = root.siteOf(row.site)
     return site && site.icon ? site.icon : "\u{f0349}"
   }
 
   function rowIconColor(row) {
-    var site = row.kind === "open" ? null : root.siteOf(row.site)
+    var site = row.kind === "open" || row.historyKind === "open" ? null : root.siteOf(row.site)
     return site && site.color ? site.color : root.foreground
   }
 
@@ -122,6 +159,7 @@ Item {
     var site = root.siteOf(row.site)
     var name = site ? site.name : ""
     if (row.kind === "tag") return strings.t("useTag").arg(name)
+    if (row.kind === "history") return row.historyKind === "open" ? Logic.displayUrl(row.url) : row.query
     if (row.query) return row.query
     return strings.t("searchWith").arg(name)
   }
@@ -129,6 +167,7 @@ Item {
   function rowSecondary(row) {
     var site = root.siteOf(row.site)
     if (row.kind === "tag") return ""
+    if (row.kind === "history") return row.historyKind === "search" && site ? "— " + site.name : ""
     if (row.kind === "open") return "— " + strings.t("open")
     if (row.query) return "— " + strings.t("searchWith").arg(site ? site.name : "")
     return ""
@@ -150,6 +189,20 @@ Item {
     onLoadFailed: { root.userText = ""; root.reloadConfig() }
     onFileChanged: reload()
   }
+
+  FileView {
+    id: historyFile
+    path: root.historyPath
+    watchChanges: true
+    atomicWrites: true
+    printErrors: false
+    onLoaded: root.loadHistory(text())
+    onLoadFailed: root.loadHistory("")
+    onFileChanged: reload()
+  }
+
+  // The history folder is private to the user.
+  Component.onCompleted: Quickshell.execDetached(["mkdir", "-p", "-m", "700", root.historyDir])
 
   OverlayWindow {
     id: panel
@@ -282,6 +335,10 @@ Item {
               } else if (event.key === Qt.Key_Space && plain && !root.tag
                          && Logic.keywordFor(root.config.sites, input.text)) {
                 root.setTag(input.text)
+                event.accepted = true
+              } else if (event.key === Qt.Key_Delete && (event.modifiers & Qt.ShiftModifier)) {
+                // Forget the selected history suggestion; otherwise do nothing.
+                root.forgetSelected()
                 event.accepted = true
               } else if (event.key === Qt.Key_Backspace && input.text.length === 0 && root.tag) {
                 root.clearTag()
