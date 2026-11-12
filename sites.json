@@ -1,0 +1,42 @@
+{
+  "browser": [],
+  "defaultSite": "g",
+  "sites": {
+    "g": {
+      "name": "Google",
+      "url": "https://www.google.com/search?q=%s",
+      "icon": "\udb80\udead",
+      "color": "#4285F4"
+    },
+    "yt": {
+      "name": "YouTube",
+      "url": "https://www.youtube.com/results?search_query=%s",
+      "icon": "\udb81\uddc3",
+      "color": "#FF0033"
+    },
+    "gh": {
+      "name": "GitHub",
+      "url": "https://github.com/search?q=%s&type=repositories",
+      "icon": "\udb80\udea4"
+    },
+    "red": {
+      "name": "Reddit",
+      "url": "https://www.reddit.com/search/?q=%s",
+      "icon": "\udb81\udc4d",
+      "color": "#FF4500"
+    },
+    "tr": {
+      "name": "Google Tradutor",
+      "url": "https://translate.google.com/?sl=auto&tl=pt&text=%s&op=translate",
+      "home": "https://translate.google.com",
+      "icon": "\udb81\uddca",
+      "color": "#4285F4"
+    },
+    "x": {
+      "name": "X",
+      "url": "https://x.com/search?q=%s",
+      "home": "https://x.com",
+      "icon": "\ud835\udd4f"
+    }
+  }
+}

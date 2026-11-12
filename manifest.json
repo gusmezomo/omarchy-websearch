@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "gusmezomo.websearch",
+  "name": "Web Search",
+  "version": "0.1.0",
+  "author": "gusmezomo",
+  "description": "Compact launcher to search the web or open a URL, with site keywords (yt, gh, ...) that turn into tags.",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "WebSearch.qml"
+  }
+}
